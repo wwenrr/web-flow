@@ -1,0 +1,13 @@
+{
+    "baotangtruyen-crawling": {
+        "retry": 3,
+        "headless": true,
+        "host": "https://baotangtruyen36.top",
+        "users": [
+            {
+                "email": "qscvdefb@gmail.com",
+                "password": "MK07042004"
+            }
+        ]
+    }
+}

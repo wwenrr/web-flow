@@ -1,0 +1,26 @@
+services:
+  ubuntu-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ubuntu-workspace
+    ports:
+      - 8080:8080
+      - 2222:22
+      - 5901:5901
+      - 6901:6901
+    volumes:
+      - ./workspace:/workspace
+    environment:
+      - LANG=C.UTF-8
+      - TZ=Asia/Ho_Chi_Minh
+      - VNC_PW=1415
+      - VNC_RESOLUTION=1280x800
+      - WORKFLOW_ID=${WORKFLOW_ID}
+      - SHUT_DOWN=${SHUT_DOWN}
+      - LOCAL_ENCRYPTION_KEY=${LOCAL_ENCRYPTION_KEY}
+      - DISPLAY=:1
+    shm_size: '1024mb'
+
+volumes:
+  tailscale-var-lib:

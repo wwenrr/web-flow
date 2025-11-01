@@ -1,0 +1,14 @@
+#!/bin/bash
+
+export DISPLAY=:1
+
+poetry env activate
+
+set -e
+
+# Ensure poetry venv is used and run the tagger
+poetry run python -u -m src.tools.tag_workflows
+
+echo "Workflow IDs updated at src/workflows/workflow_ids.json"
+
+

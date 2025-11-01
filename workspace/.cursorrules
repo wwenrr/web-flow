@@ -1,0 +1,23 @@
+# Cursor Instructions
+
+## Code Style
+- All comments must be in English
+- All code must use classes (prefer Singleton pattern)
+- Singleton classes must NOT use @classmethod - use instance methods instead
+- Do NOT use @staticmethod - use instance methods instead (unless explicitly requested)
+- Private methods (starting with `_`) must always be placed after public methods
+- Private classes (starting with `_`) must always be placed after public classes
+- Do not nest more than 2 levels of if statements
+- If a function has too much logic, extract it into a private helper class with a descriptive name (e.g., `_WorkflowDiscoveryHelper`, not just `_Helper`) placed below the main class
+
+## File Management
+- DO NOT create __init__.py files (unless explicitly requested)
+- Ensure code works without __init__.py files (Python 3.3+ supports namespace packages)
+- Use absolute imports (e.g., `from src.module import Class` instead of package imports)
+- Each workflow/subworkflow has its own services/ directory with service classes
+- Service classes should have a `perform` method and helper classes if needed
+- services/ directories MUST have __init__.py that imports all services for easy importing in workflows
+- Services should only process pure data - they should NOT access resources directly. Workflows should get resources and pass data to services
+
+## Testing
+- Do NOT run tests automatically after writing code unless explicitly requested by the user

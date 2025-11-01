@@ -1,0 +1,22 @@
+{
+  "e4a583a7-1c23-468f-aea9-7a6e79661094": {
+    "module": "src.workflows.login_bao_tang_truyen_tranh.login_workflow",
+    "class": "BaotangTruyenCrawlingPipeline"
+  },
+  "89e89a12-6a4b-4bee-bdc7-3481e1997b54": {
+    "module": "src.workflows.crawl-best-carton.crawl_product_workflow",
+    "class": "CrawlProductPipeline"
+  },
+  "a7d7d8fd-70e6-4aa4-bb2d-0c76a2c4ec96": {
+    "module": "src.workflows.crawl-best-carton.sub_workflow.crawl_html_workflow",
+    "class": "CrawlHtmlPipeline"
+  },
+  "041da24b-feb8-495a-bc06-87db173e1ea4": {
+    "module": "src.workflows.package_optimizing.bin_package_workflow",
+    "class": "BinPackagePipeline"
+  },
+  "0a70f115-c3af-4339-af33-946ac143bbf6": {
+    "module": "src.workflows.chit_chatgpt.chat_workflow",
+    "class": "ChatPipeline"
+  }
+}

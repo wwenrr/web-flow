@@ -1,0 +1,45 @@
+export DISPLAY=:1
+export PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+
+
+set -a
+source .env
+set +a
+
+poetry env activate
+
+WORKFLOW_ID=""
+SHUT_DOWN_AFTER_RUN=0
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --workflow-id|-workflow-id)
+      WORKFLOW_ID="$2"
+      shift 2
+      ;;
+    --shut-down-after-run|--shutdown-after-run)
+      SHUT_DOWN_AFTER_RUN=1
+      shift 1
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      # Ignore unknown flags for now
+      shift
+      ;;
+  esac
+done
+
+if [[ -n "$WORKFLOW_ID" ]]; then
+  poetry run python src/run.py --workflow-id "$WORKFLOW_ID"
+else
+  poetry run python src/run.py
+fi
+
+if [[ "$SHUT_DOWN_AFTER_RUN" -eq 1 ]]; then
+  echo "[run] shutting down container (sending SIGTERM to PID 1)"
+  kill -TERM 1 || true
+  sleep 1
+fi

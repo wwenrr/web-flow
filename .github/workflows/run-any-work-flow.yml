@@ -1,0 +1,49 @@
+name: Run Any WorkFlow
+
+on:
+  workflow_dispatch:
+    inputs:
+      workflow-id:
+        description: 'Workflow ID'
+        required: true
+        default: ''
+        type: string
+
+jobs:
+  run-any-work-flow:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Install curl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+
+      - name: Create .env file
+        run: |
+          echo "TAIL_SCALE_AUTH_KEY=${TAILSCALE_AUTH_KEY}" > .env
+        env:
+          TAILSCALE_AUTH_KEY: ${{ secrets.TAILSCALE_AUTH_KEY }}
+
+      - name: Build and start containers
+        run: |
+          chmod +x bin/up
+          ./bin/up --no-bg
+        env:
+          WORKFLOW_ID: ${{ github.event.inputs.workflow-id }}
+          SHUT_DOWN: "false"
+          LOCAL_ENCRYPTION_KEY: ${{ secrets.LOCAL_ENCRYPTION_KEY }}
+      
+      - name: Stop containers
+        if: always()
+        run: |
+          docker compose down
+
+

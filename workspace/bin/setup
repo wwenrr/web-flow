@@ -1,0 +1,24 @@
+#!/bin/bash
+
+export DISPLAY=:1
+
+poetry env activate
+
+set -e
+
+poetry config virtualenvs.in-project true
+
+poetry install
+
+export PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+mkdir -p "$PLAYWRIGHT_BROWSERS_PATH"
+chmod -R 777 "$PLAYWRIGHT_BROWSERS_PATH"
+
+poetry run playwright install-deps chromium
+poetry run playwright install chromium
+
+# Auto-load persisted environment variables if present
+if [ -f /workspace/.env ]; then
+  # shellcheck disable=SC1091
+  . /workspace/.env
+fi

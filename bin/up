@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -a
+source .env
+set +a
+
+NO_VPN=0
+NO_BG=0
+for arg in "$@"; do
+case "$arg" in
+  --no-vpn)
+    NO_VPN=1
+    ;;
+  --no-bg|-no-bg)
+    NO_BG=1
+    ;;
+esac
+done
+
+if [ "$NO_VPN" -ne 1 ]; then
+  curl -fsSL https://tailscale.com/install.sh | sh
+  sudo tailscale up --auth-key="$TAILSCALE_AUTH_KEY"
+fi
+
+if [ "$NO_BG" -eq 1 ]; then
+docker compose --env-file .env up --build
+else
+docker compose --env-file .env up -d --build
+fi

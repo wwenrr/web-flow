@@ -1,0 +1,10 @@
+.venv
+__pycache__
+*.pyc
+.env
+
+# Ignore data files but keep settings.json
+**/data/
+*.cookies
+local_resources
+resource_key.txt

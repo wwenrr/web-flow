@@ -1,0 +1,49 @@
+name: Crawl Best Carton Product
+
+on:
+  workflow_dispatch:
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Install curl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+
+      - name: Create .env file
+        run: |
+          echo "TAIL_SCALE_AUTH_KEY=${TAILSCALE_AUTH_KEY}" > .env
+        env:
+          TAILSCALE_AUTH_KEY: ${{ secrets.TAILSCALE_AUTH_KEY }}
+
+      - name: Build and start containers
+        run: |
+          chmod +x bin/up
+          ./bin/up
+        env:
+          WORKFLOW_ID: 89e89a12-6a4b-4bee-bdc7-3481e1997b54
+          SHUT_DOWN: "false"
+
+      - name: Wait for duration
+        run: |
+          DURATION_HOURS=5
+          DURATION_SECONDS=$((DURATION_HOURS * 3600))
+          echo "Container will run for $DURATION_HOURS hours ($DURATION_SECONDS seconds)"
+          sleep $DURATION_SECONDS
+      
+      - name: Stop containers
+        if: always()
+        run: |
+          docker compose down
+
+

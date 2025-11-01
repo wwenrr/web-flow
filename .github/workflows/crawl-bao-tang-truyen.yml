@@ -1,0 +1,39 @@
+name: Crawl Bao Tang Truyen
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  crawl-bao-tang-truyen:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Install curl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+
+      - name: Create .env file
+        run: |
+          echo "TAIL_SCALE_AUTH_KEY=${TAILSCALE_AUTH_KEY}" > .env
+        env:
+          TAILSCALE_AUTH_KEY: ${{ secrets.TAILSCALE_AUTH_KEY }}
+
+      - name: Build and start containers
+        run: |
+          chmod +x bin/up
+          ./bin/up --no-vpn --no-bg
+        env:
+          WORKFLOW_ID: e4a583a7-1c23-468f-aea9-7a6e79661094
+          SHUT_DOWN: 1
+
+

@@ -1,0 +1,56 @@
+name: Start Docker Container
+
+on:
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: 'Duration in hours (default 5h)'
+        required: false
+        default: '5'
+        type: choice
+        options:
+          - '1'
+          - '3'
+          - '5'
+          - '8'
+          - '12'
+
+jobs:
+  start-container:
+    runs-on: ubuntu-latest
+    environment: dev
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Install curl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+      
+      - name: Create .env file
+        run: |
+          echo "TAIL_SCALE_AUTH_KEY=${TAILSCALE_AUTH_KEY}" > .env
+        env:
+          TAILSCALE_AUTH_KEY: ${{ secrets.TAILSCALE_AUTH_KEY }}
+      
+      - name: Build and start containers
+        run: |
+          chmod +x bin/up
+          ./bin/up
+      
+      - name: Wait for duration
+        run: |
+          DURATION_HOURS=${{ github.event.inputs.duration || '5' }}
+          DURATION_SECONDS=$((DURATION_HOURS * 3600))
+          echo "Container will run for $DURATION_HOURS hours ($DURATION_SECONDS seconds)"
+          sleep $DURATION_SECONDS
+      
+      - name: Stop containers
+        if: always()
+        run: |
+          docker compose down

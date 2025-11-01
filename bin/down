@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sudo tailscale down
+docker compose down

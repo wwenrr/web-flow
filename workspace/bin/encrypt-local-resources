@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -a
+source .env
+set +a
+
+echo "LOCAL_ENCRYPTION_KEY: $LOCAL_ENCRYPTION_KEY"
+
+## Always execute via poetry to ensure the venv is used
+
+if [[ $# -lt 1 ]]; then
+  echo "Usage: $(basename "$0") --workflow-id <UUID> [--resource-dir <path>] [--key-out <path>] [--key <string>]"
+  exit 1
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+TOOL_PATH="$REPO_ROOT/src/tools/encrypt_local_resources.py"
+
+if [[ ! -f "$TOOL_PATH" ]]; then
+  echo "Tool not found: $TOOL_PATH" >&2
+  exit 1
+fi
+
+poetry run python -u "$TOOL_PATH" "$@"
+
+
